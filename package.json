@@ -1,0 +1,24 @@
+{
+  "name": "art-hub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server":"nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shalabyyy/Art-Hub.git"
+  },
+  "author": "youssef shalaby\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[\u001b[CS\u001b[",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shalabyyy/Art-Hub/issues"
+  },
+  "homepage": "https://github.com/Shalabyyy/Art-Hub#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^1.19.1"
+  }
+}
