@@ -2,6 +2,9 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
+    _id:{
+        type:mongoose.Types.ObjectId
+    },
     type: {
         type:[String],
         enum:['B','S','A'],

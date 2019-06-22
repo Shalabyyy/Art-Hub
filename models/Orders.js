@@ -2,6 +2,9 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const OrderSchema = new Schema({
+    _id:{
+        type:mongoose.Types.ObjectId
+    },
     ordered_by:{
         type:mongoose.Types.ObjectId,
         required:true
@@ -12,8 +15,7 @@ const OrderSchema = new Schema({
         //This is the grand total of the Order
     },
     interest:{
-        typer:Number,
-        required:true
+        typer:Number
         //This will be ArtHub's Commsion
     },
     products:{
