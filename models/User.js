@@ -2,9 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
-    _id:{
-        type:mongoose.Types.ObjectId
-    },
     type: {
         type:[String],
         enum:['B','S','A'],
@@ -54,7 +51,7 @@ const UserSchema = new Schema({
         previous_work: [Object],    //Array of Product.JS objects
         portfolio: String,          //Url of the portfolio
         linkedin: String,           //Url/user name of Linkedin profile
-        status:[String],             // enum of ['Pending','Accepted','Reviewing','Rejected']
+        status:String,             // enum of ['Pending','Accepted','Reviewing','Rejected']
         response_from_admin:[{
             //should always be sorted, display first object first in frontend
             response_id: Number,
