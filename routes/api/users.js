@@ -13,6 +13,24 @@ router.get('/get',async (req,res)=>{
         return res.json({error:'Get request Error'})
     }
 })
+router.get('/get/:id',async (req,res)=>{
+    try {
+        const user = await User.findById(req.params.id)
+        return res.json({data:user})
+    } catch (error) {
+        return res.json({error:'Get request Error'})
+    }
+})
+router.get('/getUser/:username',async (req,res)=>{
+    try {
+        const uname= req.params.username
+        const user = await User.findOne({username:uname})
+        return res.json({data:user})
+    } catch (error) {
+        
+        return res.json({error:'Get request Error'})
+    }
+})
 router.post('/register', async (req,res)=>{
     date_joined = moment().format('MMMM Do YYYY, h:mm:ss a')
     sellerprofile = [] //Except if the account is a subset of seller
