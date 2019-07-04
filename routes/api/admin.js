@@ -93,20 +93,23 @@ router.put("/markAs", async (req, res) => {
     const id = req.body._id;
     const setTo = req.body.state;
     const product = await Product.findById(id);
-    if(product.status==='Accepting' || product.status==="Rejected"){
-      return res.json({error:'You can not ammend an Accepted or a Reject Product'})
+    if (product.status === "Accepting" || product.status === "Rejected") {
+      return res.json({
+        error: "You can not ammend an Accepted or a Reject Product"
+      });
     }
     //console.log(product)
     if (setTo === "Accepted") {
       const update = await Product.update(
         { _id: id },
-        {$set:{ 
-          status: "Accepted" 
-        }},
-        
+        {
+          $set: {
+            status: "Accepted"
+          }
+        }
       );
       // Notify The User That his Product was Accepted Via Email
-      console.log(update)
+      console.log(update);
       return res.json({ data: update });
     } else if (setTo === "Rejected") {
       const update = await Product.findOneAndUpdate(
@@ -121,21 +124,96 @@ router.put("/markAs", async (req, res) => {
         return res.json({ error: "You NEED to provide a feedback Message!" });
       }
       const reply = {
-        response_id:product.response_from_admin.length+1,
+        response_id: product.response_from_admin.length + 1,
         sent_by: "Admin", //The Admin or The Seller
         text: req.body.reply, //message body
         date_sent: moment().format("MMMM Do YYYY, h:mm:ss a") //date of message
       };
-      console.log(reply.response_id)
+      console.log(reply.response_id);
       const update = await Product.findOneAndUpdate(
         { _id: id },
         { status: "Reviewing", $push: { response_from_admin: reply } },
-        {useFindAndModify:true}
+        { useFindAndModify: true }
       );
       return res.json({ data: update });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    return res.json({ error: "PUT request error" });
+  }
+});
+// Account Control
+router.put("/Approve", async (req, res) => {
+  try {
+    const validation = joi.validate(req.body, {
+      id: joi.string().length(24),
+      setTo: joi.string().allow(),
+      message: joi.string().allow()
+    });
+    if (validation.error) {
+      return res.json({ error: validation.error });
+    }
+    const setTo = req.body.setTo;
+    const message = req.body.message;
+    const id = req.body.id;
+    const user = await User.findById(id);
+    if (user.type[0] === "S") {
+      if (user.SellerProfile.status === "Accepted") {
+        return res.json({ error: "This user is already accepted!" });
+      }
+      if (
+        !(setTo === "Accepted" || setTo === "Reviewing" || setTo === "Rejected")
+      ) {
+        console.log(user.SellerProfile);
+        return res.json({ error: "The state is not defined" });
+      } else {
+        if (
+          (user.SellerProfile.status === "Pending" ||
+            user.SellerProfile.status === "Reviewing") &&
+          setTo === "Accepted"
+        ) {
+          const update = await User.update(
+            { _id: id },
+            {
+              $set: {
+                SellerProfile: {
+                  status: "Accepted",
+                  about: user.SellerProfile.about, //Quick Summary of the profile, mimium 20 characters and maximum 150
+                  previous_work: user.SellerProfile.previous_work, //Array of Product.JS objects
+                  portfolio: user.SellerProfile.portfolio, //Url of the portfolio
+                  linkedin: user.SellerProfile.linkedin,
+                  response_from_admin: user.SellerProfile.response_from_admin
+                }
+              }
+            }
+          );
+          return res.json({ data: update });
+        }
+        if (
+          (user.SellerProfile.status === "Pending" ||
+            user.SellerProfile.status === "Reviewing") &&
+          setTo === "Reviewing"
+        ) {
+          const reply = {
+            //should always be sorted, display first object first in frontend
+            response_id: user.SellerProfile.response_from_admin.length + 1,
+            sent_by: "Admin", //The Admin or The Seller
+            text: message, //message body
+            date_sent: moment().format("MMMM Do YYYY, h:mm:ss a") //date of message
+          };
+          console.log(reply)
+          
+          const update = await User.findOneAndUpdate(
+            { _id: id },
+            { status: "Reviewing", SellerProfile:{$push: { response_from_admin: reply }} },
+            { useFindAndModify: true }
+          );
+          return res.json({ data: update });
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
     return res.json({ error: "PUT request error" });
   }
 });
