@@ -8,6 +8,10 @@ const UserSchema = new Schema({
         required:true
         //This Will be thet type of the account; Buyer, Seller and Admin respectivley
     },
+    phone:{
+        type:String,
+        required:true
+    },
     //profile picture: Grid FS Object TODO
     name: {
         type:String,

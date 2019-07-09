@@ -43,12 +43,13 @@ router.post('/register', async (req,res)=>{
         password:joi.string().required() ,
         date_of_birth: joi.string().required(),
         interests:joi.array().required(),
-        SellerProfile: joi.allow()
+        SellerProfile: joi.allow(),
+        phone:joi.string().required()
     })
     if(status.error){
         return res.json({error:status.error.details[0]})
     }
-    const{type,name,email,username,password,date_of_birth,interests}= req.body
+    const{type,name,email,username,password,date_of_birth,interests,phone}= req.body
     
     const useremail = await User.findOne({email})
     const usernamef = await User.findOne({username})
@@ -76,6 +77,7 @@ router.post('/register', async (req,res)=>{
               date_joined,
               name,
               email,
+              phone,
               password:hashedPassword,
               username:username.toLowerCase(),
               date_of_birth,
@@ -105,6 +107,7 @@ router.post('/register', async (req,res)=>{
             date_joined,
             name,
             email,
+            phone,
             password:hashedPassword,
             username:username.toLowerCase(),
             date_of_birth,
