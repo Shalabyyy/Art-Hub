@@ -34,7 +34,8 @@ class UploadTest extends Component {
             }
         })
         .catch((err)=>{
-                alert("Errow while uploading the image via multer")
+                console.log(err)
+                alert("Error while uploading the image via multer")
                 this.setDefaultImage("multer")
         })
     }

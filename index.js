@@ -2,8 +2,11 @@ const express = require('express')
 const app = express()
 const port = 4000
 const path= require('path')
+const cors = require('cors');
 const mongoose = require('mongoose')
 app.use(express.json())
+app.use(cors());
+
 
 const users= require('./routes/api/users')
 const products= require('./routes/api/products')
