@@ -16,7 +16,13 @@ class Register extends Component {
     registerAs: ["B"],
     interests: [],
     linkedin: "",
-    portfolio: ""
+    portfolio: "",
+    AvailableInterests: ["Apple", "Microsoft", "Google"],
+    SellerProfile: {
+      about: "", //Quick Summary of the profile, mimium 20 characters and maximum 150
+      portfolio: "", //Url of the portfolio
+      linkedin: "" //Url/user name of Linkedin profile
+    }
   };
 
   componentWillMount() {
@@ -32,6 +38,41 @@ class Register extends Component {
         showDaysInNextAndPreviousMonths: true,
         onSelect: function(date) {
           context.dateChange(date);
+        }
+      });
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+      var elems = document.querySelectorAll(".chips");
+      var instances = M.Chips.init(elems, {
+        placeholder: "Add Interests",
+        secondaryPlaceholder: "Add",
+        limit: 10,
+        onChipAdd: function(event, chip) {
+          const validChips = context.state.AvailableInterests;
+          const entry = chip.firstChild.data;
+          if (!validChips.includes(entry)) {
+            console.log("Does not exist.. Will be removed");
+            this.deleteChip(this.chipsData.length - 1);
+            return;
+          }
+          // console.log('Chip Data:',this.chipsData[0].tag)
+          // Before Sumbitting Change to a Normal Array
+          context.setState({ interests: this.chipsData });
+          console.log("Event:", event);
+          console.log("Chip:", chip.firstChild.data);
+        },
+        onChipDelete: function() {
+          console.log("DELETING");
+          context.setState({ interests: this.chipsData });
+        },
+        autocompleteOptions: {
+          //autocompleteOptions.data to be layouted based on interests from Database
+          data: {
+            Apple: null,
+            Microsoft: null,
+            Google: null
+          },
+          limit: 2
         }
       });
     });
@@ -91,9 +132,11 @@ class Register extends Component {
     console.log(state);
     //console.log(event.target.value)
     if (state) {
+      this.toggle()
       this.setState({ registerAs: ["B", "S"] });
     }
     if (!state) {
+      this.toggle()
       this.setState({ registerAs: ["B"] });
     }
     console.log(this.state.registerAs);
@@ -107,9 +150,19 @@ class Register extends Component {
     console.log("DOB:", this.state.date_of_birth);
     console.log("AccountType:", this.state.registerAs);
   };
+  toggle =()=>{
+    var section = document.getElementById("seller-section")
+    if(section.style.display === "none"){
+      section.style.display = "block"
+    }
+    else {
+      section.style.display = "none"
+    }
+  }
   render() {
     return (
       <div className="container">
+        <i class="fab fa-linkedin"></i>
         <div class="row">
           <form class="col s12">
             <div class="row" id="Name and Phone">
@@ -223,7 +276,63 @@ class Register extends Component {
                 </div>
               </div>
               <div>
-                <button type='button' name="Submit" title="Submit" onClick={this.submit}>Submit</button>
+                <button
+                  type="button"
+                  name="Submit"
+                  title="Submit"
+                  onClick={this.submit}
+                >
+                  Submit
+                </button>
+                <button type='button' onClick={this.toggle}> Toggle</button>
+              </div>
+            </div>
+            <div class="row" id="interests">
+              <div class="input-field col s12">
+                <div class="chips">
+                  <input class="custom-class" />
+                </div>
+              </div>
+            </div>
+            <div style={{display:'none'}} id="seller-section">
+              <div class='row' id='seller-section1'>
+              <div class="input-field col s12">
+                  <i class="material-icons prefix">info</i>
+                  <textarea
+                    id="icon_about"
+                    class="materialize-textarea"
+                    name="about"
+                    value={this.state.about}
+                    onChange={this.handleChange}
+                  />
+                  <label for="icon_about">About</label>
+                </div>
+              </div>
+              <div class="row" id="seller-section2">
+                <div class="input-field col s6">
+                  <i class="material-icons prefix">link</i>
+                  <input
+                    id="icon_portfolio"
+                    type="text"
+                    class="validate"
+                    name="portfolio"
+                    value={this.state.portfolio}
+                    onChange={this.handleChange}
+                  />
+                  <label for="icon_portfolio">Portfolio Link</label>
+                </div>
+                <div class="input-field col s6">
+                  <i class="fab fa-linkedin"></i>
+                  <input
+                    id="icon_linkedin"
+                    type="url"
+                    class="validate"
+                    name="linkedin"
+                    value={this.state.linkedin}
+                    onChange={this.handleChange}
+                  />
+                  <label for="icon_linkedin">LinkedIn</label>
+                </div>
               </div>
             </div>
           </form>
