@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 4000 | process.env.PORT;
+const port = process.env.PORT || 4000;
 const path = require("path");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -44,4 +44,4 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.listen(port, () => console.log(`Example app listening on port 4000!`));
+app.listen(process.env.PORT || 4000, () => console.log(`Example app listening on port 4000!`));
