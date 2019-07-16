@@ -7,7 +7,6 @@ const mongoose = require('mongoose')
 app.use(express.json())
 app.use(cors());
 
-
 const users= require('./routes/api/users')
 const products= require('./routes/api/products')
 const orders= require('./routes/api/orders')
